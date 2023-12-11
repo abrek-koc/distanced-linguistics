@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Levenshtein Distance Calculator</title>
+  <style>
+    /* Basic styling for centering and responsiveness */
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 0;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      background-color: #f5f5f5;
+    }
+
+    /* Styling for the container holding the content */
+    #container {
+      text-align: center;
+      width: 80%;
+      max-width: 600px;
+      padding: 20px;
+      background-color: #fff;
+      border-radius: 8px;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    }
+
+    /* Styling for result display */
+    #result {
+      margin-top: 20px;
+      font-weight: bold;
+    }
+
+    /* Styling for text areas and button */
+    #text1, #text2 {
+      width: 100%;
+      box-sizing: border-box;
+      padding: 10px;
+      margin-bottom: 10px;
+    }
+
+    #calculateBtn {
+      background-color: #71cedf;
+      color: #fff;
+      padding: 10px 20px;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+    }
+  </style>
+</head>
+<body>
+  <!-- Container for the content -->
+  <div id="container">
+    <h1>Linguistics and Scary Numbers Stuff</h1>
+
+    <!-- Text areas for user input -->
+    <label for="text1">Text 1:</label>
+    <textarea id="text1" rows="4" placeholder="Enter text"></textarea>
+
+    <label for="text2">Text 2:</label>
+    <textarea id="text2" rows="4" placeholder="Enter text"></textarea>
+
+    <!-- Button to trigger Levenshtein distance calculation -->
+    <button id="calculateBtn" onclick="calculateLevenshtein()">Calculate Levenshtein Distance</button>
+
+    <!-- Display area for the result -->
+    <div id="result"></div>
+  </div>
+
+  <!-- JavaScript code for Levenshtein distance calculation -->
+  <script>
+    // Function to calculate Levenshtein distance
+    function calculateLevenshtein() {
+      var text1 = document.getElementById('text1').value;
+      var text2 = document.getElementById('text2').value;
+
+      var distance = getLevenshteinDistance(text1, text2);
+
+      // Display the calculated Levenshtein distance
+      document.getElementById('result').innerText = 'Levenshtein Distance: ' + distance;
+    }
+
+    // Function to compute Levenshtein distance between two strings
+    function getLevenshteinDistance(a, b) {
+      // If either string is empty, return the length of the other string
+      if (!a || !b) return (a || b).length;
+
+      var matrix = [];
+
+      // Initialize the matrix with row and column indices
+      for (var i = 0; i <= b.length; i++) {
+        matrix[i] = [i];
+      }
+
+      for (var j = 0; j <= a.length; j++) {
+        matrix[0][j] = j;
+      }
+
+      // Fill in the matrix using dynamic programming approach
+      for (var i = 1; i <= b.length; i++) {
+        for (var j = 1; j <= a.length; j++) {
+          if (b.charAt(i - 1) == a.charAt(j - 1)) {
+            matrix[i][j] = matrix[i - 1][j - 1];
+          } else {
+            matrix[i][j] = Math.min(
+              matrix[i - 1][j - 1] + 1,
+              matrix[i][j - 1] + 1,
+              matrix[i - 1][j] + 1
+            );
+          }
+        }
+      }
+
+      // The bottom-right cell contains the Levenshtein distance
+      return matrix[b.length][a.length];
+    }
+  </script>
+</body>
+</html>
